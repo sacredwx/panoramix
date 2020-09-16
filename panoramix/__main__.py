@@ -1,6 +1,7 @@
 import cProfile
 import logging
 import sys
+import os
 
 import coloredlogs
 import timeout_decorator
@@ -76,6 +77,7 @@ def print_decompilation(this_addr):
         this_addr = sys.stdin.read().strip()
 
     if len(this_addr) == 42:
+        print('Address: ', this_addr)
         decompilation = decompile_address(this_addr, function_name)
     else:
         decompilation = decompile_bytecode(this_addr, function_name)
@@ -101,6 +103,9 @@ def main():
         )
         exit(1)
 
+    if os.path.exists(sys.argv[1]):
+        fp = open(sys.argv[1], 'r')
+        sys.argv[1] = fp.read().replace('\r\n', ',').replace('\n', ',')
     if "," in sys.argv[1]:
         for addr in sys.argv[1].split(","):
             print_decompilation(addr)
